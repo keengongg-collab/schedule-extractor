@@ -1,0 +1,24 @@
+# ===== 后端依赖 =====
+flask==3.0.0                    # Web 框架
+flask-cors==4.0.0               # 跨域支持（小程序/PC端访问API）
+
+# ===== 文档解析 =====
+pdfplumber==0.11.1              # PDF 读取
+python-docx==1.1.2              # Word 读取
+
+# ===== AI 抽取 =====
+openai==1.51.0                  # AI 大模型调用（兼容各类OpenAI格式API）
+
+# ===== 数据库 =====
+# sqlite3 为 Python 内置模块，无需额外安装
+
+# ===== PC 端依赖 =====
+streamlit==1.39.0               # PC 网页管理工具
+pandas==2.2.3                   # 表格处理与 Excel 导出
+openpyxl==3.1.5                 # Excel 写入引擎
+pynput==1.7.7                   # 键盘快捷键监听（划词插件）
+pyperclip==1.9.0                # 剪贴板读取（划词插件）
+plyer==2.1.0                    # Windows 桌面通知
+
+# ===== 工具 =====
+python-dotenv==1.0.1            # .env 环境变量加载

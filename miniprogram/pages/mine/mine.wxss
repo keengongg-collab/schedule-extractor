@@ -1,0 +1,75 @@
+/* pages/mine/mine.wxss */
+.tab-bar {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #999;
+}
+.tab.active {
+  color: #4A90D9;
+  font-weight: bold;
+  border-bottom: 4rpx solid #4A90D9;
+}
+
+.loading, .empty { text-align: center; padding: 80rpx; color: #999; }
+
+.schedule-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+.schedule-info { flex: 1; }
+.schedule-name { font-size: 32rpx; font-weight: bold; display: block; }
+.schedule-date { font-size: 26rpx; color: #666; display: block; margin: 8rpx 0; }
+.schedule-loc { font-size: 26rpx; color: #999; display: block; }
+
+.schedule-status {
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+.schedule-status.confirmed { background: #e6ffed; color: #52c41a; }
+.schedule-status.pending { background: #fff7e6; color: #d48806; }
+
+.qa-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+.qa-question {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+.qa-context {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+.qa-input {
+  border: 1rpx solid #ddd;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.btn-primary {
+  background: #4A90D9;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}

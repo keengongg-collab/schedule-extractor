@@ -1,0 +1,39 @@
+<!-- pages/mine/mine.wxml 我的页面 -->
+<view class="container">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab {{currentTab === 'mySchedule' ? 'active' : ''}}" bindtap="switchTab" data-tab="mySchedule">我的排班</view>
+    <view class="tab {{currentTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">待补充信息</view>
+  </view>
+
+  <!-- 我的排班 -->
+  <view wx:if="{{currentTab === 'mySchedule'}}">
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:if="{{!loading && mySchedules.length === 0}}" class="empty">暂无排班数据</view>
+    <view wx:for="{{mySchedules}}" wx:key="id" class="schedule-card">
+      <view class="schedule-info">
+        <text class="schedule-name">{{item.name}}</text>
+        <text class="schedule-date">{{item.duty_date}} {{item.start_time}}-{{item.end_time}}</text>
+        <text class="schedule-loc">📍 {{item.location || '未填写'}}</text>
+      </view>
+      <view class="schedule-status {{item.is_confirmed ? 'confirmed' : 'pending'}}">
+        {{item.is_confirmed ? '已确认' : '待确认'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 待补充信息 -->
+  <view wx:if="{{currentTab === 'pending'}}">
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:if="{{!loading && pendingQuestions.length === 0}}" class="empty">没有待补充的信息</view>
+
+    <view wx:for="{{pendingQuestions}}" wx:key="id" class="qa-card">
+      <view class="qa-question">{{item.question}}</view>
+      <view class="qa-context" wx:if="{{item.name}}">{{item.name}} - {{item.duty_date}}</view>
+      <form bindsubmit="onSubmitAnswer" data-id="{{item.id}}">
+        <input class="qa-input" name="answer" placeholder="请输入补充信息" />
+        <button class="btn-primary" formType="submit" size="mini">提交</button>
+      </form>
+    </view>
+  </view>
+</view>

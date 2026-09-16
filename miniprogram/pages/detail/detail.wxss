@@ -1,0 +1,54 @@
+/* pages/detail/detail.wxss */
+.loading { text-align: center; padding: 80rpx; color: #999; }
+
+.detail-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.status-bar { text-align: center; margin-bottom: 30rpx; }
+.status {
+  padding: 8rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+.status.confirmed { background: #e6ffed; color: #52c41a; }
+.status.pending { background: #fff7e6; color: #d48806; }
+
+.info-list { margin-bottom: 40rpx; }
+.info-row {
+  display: flex;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .label {
+  flex: 0 0 180rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+.info-row .value {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #4A90D9;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  margin: 16rpx 0;
+}
+.btn-danger {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  margin: 16rpx 0;
+}

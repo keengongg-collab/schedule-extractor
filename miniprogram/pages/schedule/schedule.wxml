@@ -1,0 +1,39 @@
+<!-- pages/schedule/schedule.wxml 排班列表 -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索姓名" value="{{searchName}}" bindinput="onSearch" bindconfirm="doSearch" />
+    <button class="search-btn" bindtap="doSearch">搜索</button>
+  </view>
+
+  <!-- 统计 -->
+  <view class="stat-bar">
+    <text>共 {{schedules.length}} 条排班记录</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && schedules.length === 0}}" class="empty">
+    <text>暂无排班数据</text>
+  </view>
+
+  <!-- 排班表格 -->
+  <view wx:if="{{schedules.length > 0}}" class="table">
+    <!-- 表头 -->
+    <view class="table-header">
+      <text class="col-name">姓名</text>
+      <text class="col-date">日期</text>
+      <text class="col-time">时间</text>
+      <text class="col-loc">地点</text>
+    </view>
+    <!-- 表内容 -->
+    <view wx:for="{{schedules}}" wx:key="id" class="table-row" bindtap="goDetail" data-id="{{item.id}}">
+      <text class="col-name">{{item.name}}</text>
+      <text class="col-date">{{item.duty_date}}</text>
+      <text class="col-time">{{item.start_time || '--'}}</text>
+      <text class="col-loc">{{item.location || '--'}}</text>
+    </view>
+  </view>
+</view>

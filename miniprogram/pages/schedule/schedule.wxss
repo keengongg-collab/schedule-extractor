@@ -1,0 +1,66 @@
+/* pages/schedule/schedule.wxss */
+.search-bar {
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  gap: 20rpx;
+}
+.search-input {
+  flex: 1;
+  padding: 12rpx 24rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+.search-btn {
+  background: #4A90D9;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  padding: 0 30rpx;
+}
+
+.stat-bar {
+  padding: 20rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.table {
+  background: #fff;
+  margin: 0 20rpx 40rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+.table-header {
+  display: flex;
+  padding: 20rpx 0;
+  background: #4A90D9;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+.table-header text, .table-row text {
+  text-align: center;
+}
+.col-name { flex: 0 0 120rpx; }
+.col-date { flex: 1; }
+.col-time { flex: 1; }
+.col-loc { flex: 1; }
+
+.table-row {
+  display: flex;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  font-size: 26rpx;
+}
+.table-row:active { background: #f5f5f5; }
+.table-row:last-child { border-bottom: none; }
+
+.loading, .empty {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999;
+}

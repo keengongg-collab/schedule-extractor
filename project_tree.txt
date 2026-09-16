@@ -1,0 +1,47 @@
+schedule-extractor/
+├── backend/                          # ===== Python 后端核心引擎 =====
+│   ├── __init__.py
+│   ├── app.py                         # Flask 应用入口，注册路由
+│   ├── config.py                      # 全局配置（端口、DB路径、AI密钥）
+│   ├── core/                          # 核心业务逻辑层
+│   │   ├── __init__.py
+│   │   ├── extractor.py               # AI 排班信息抽取模块
+│   │   ├── parser.py                  # 文档解析器（PDF/Word/纯文本）
+│   │   ├── qa.py                      # 问答模块：信息缺失→主动提问→重新解析
+│   │   └── models.py                  # 数据模型（dataclass）
+│   ├── api/                           # REST API 路由层
+│   │   ├── __init__.py
+│   │   ├── routes_schedule.py         # 日程相关接口（增删改查）
+│   │   ├── routes_upload.py           # 文件上传/文本粘贴接口
+│   │   └── routes_reminder.py         # 提醒配置接口
+│   ├── db/                            # 数据库层
+│   │   ├── __init__.py
+│   │   ├── database.py                # SQLite 连接与初始化
+│   │   └── schema.sql                 # 建表 SQL 脚本
+│   └── utils/
+│       ├── __init__.py
+│       └── helpers.py                 # 通用工具函数（日期格式化等）
+│
+├── pc_client/                         # ===== PC 附属管理工具 =====
+│   ├── app_streamlit.py               # Streamlit 网页主程序
+│   ├── word_selector.py              # 划词插件（pynput+pyperclip）
+│   ├── notifier.py                    # Windows 桌面通知（plyer）
+│   ├── excel_export.py               # 表格导出（pandas→Excel）
+│   └── run_all.py                     # 一键启动入口（同时启 Streamlit + 划词监听）
+│
+├── miniprogram/                       # ===== 微信小程序前端 =====
+│   ├── app.js                         # 小程序入口
+│   ├── app.json                       # 全局配置（页面路由、权限）
+│   ├── app.wxss                       # 全局样式
+│   ├── pages/
+│   │   ├── index/                     # 首页：上传/粘贴文本
+│   │   ├── schedule/                  # 全部排班表格
+│   │   ├── detail/                    # 单条日程详情
+│   │   └── mine/                      # 个人值班日程
+│   └── utils/
+│       └── api.js                     # 后端 API 封装
+│
+├── README.md                          # 项目说明文档
+├── .gitignore                         # Git 忽略文件
+├── requirements.txt                   # Python 依赖清单
+└── project_tree.txt                   # 本目录树

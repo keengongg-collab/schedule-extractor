@@ -1,0 +1,46 @@
+<!-- pages/detail/detail.wxml 日程详情 -->
+<view class="container">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:if="{{schedule}}" class="detail-card">
+    <!-- 状态 -->
+    <view class="status-bar">
+      <text class="status {{schedule.is_confirmed ? 'confirmed' : 'pending'}}">
+        {{schedule.is_confirmed ? '已确认' : '待确认'}}
+      </text>
+    </view>
+
+    <!-- 信息列表 -->
+    <view class="info-list">
+      <view class="info-row">
+        <text class="label">姓名</text>
+        <text class="value">{{schedule.name}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">值班日期</text>
+        <text class="value">{{schedule.duty_date}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">开始时间</text>
+        <text class="value">{{schedule.start_time || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">结束时间</text>
+        <text class="value">{{schedule.end_time || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">值班地点</text>
+        <text class="value">{{schedule.location || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">备注</text>
+        <text class="value">{{schedule.remark || '无'}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <button class="btn-primary" bindtap="onConfirm" wx:if="{{!schedule.is_confirmed}}">确认日程</button>
+    <button class="btn-primary" bindtap="onSubscribe">🔔 订阅提醒</button>
+    <button class="btn-danger" bindtap="onDelete">删除此日程</button>
+  </view>
+</view>

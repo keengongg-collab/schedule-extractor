@@ -1,0 +1,54 @@
+<!-- pages/index/index.wxml 首页 -->
+<view class="container">
+  <!-- 标题 -->
+  <view class="header">
+    <text class="title">📅 排班助手</text>
+    <text class="subtitle">上传文档或粘贴文本，AI自动提取排班信息</text>
+  </view>
+
+  <!-- 文件上传 -->
+  <view class="card">
+    <view class="section-title">上传文档</view>
+    <button class="btn-primary" bindtap="onChooseFile">选择文件 (PDF/Word/TXT)</button>
+  </view>
+
+  <!-- 文本粘贴 -->
+  <view class="card">
+    <view class="section-title">粘贴文本</view>
+    <textarea
+      class="text-input"
+      placeholder="粘贴排班文本，例如：&#10;张三 2024-03-15 08:00-12:00 图书馆一楼&#10;李四 2024-03-15 14:00-18:00 图书馆二楼"
+      value="{{textInput}}"
+      bindinput="onInput"
+      auto-height
+      maxlength="-1"
+    />
+    <button class="btn-primary" bindtap="onParseText" loading="{{parsing}}" disabled="{{parsing}}">
+      {{parsing ? '解析中...' : '开始解析'}}
+    </button>
+  </view>
+
+  <!-- 解析结果 -->
+  <view wx:if="{{parseResult}}" class="card">
+    <view class="section-title">解析结果</view>
+    <view>共提取 {{parseResult.total || 0}} 条日程</view>
+
+    <!-- 日程列表 -->
+    <view wx:for="{{parseResult.schedules}}" wx:key="id" class="result-item" bindtap="goSchedule">
+      <text>{{item.name}}</text>
+      <text>{{item.duty_date}}</text>
+      <text>{{item.start_time}}-{{item.end_time}}</text>
+      <text>{{item.location}}</text>
+    </view>
+
+    <!-- 待补充提示 -->
+    <view wx:if="{{questions.length > 0}}" class="warning-box" bindtap="goPending">
+      <text>⚠️ {{questions.length}} 条信息不完整，点击补充</text>
+    </view>
+  </view>
+
+  <!-- 查看全部排班 -->
+  <view class="card" bindtap="goSchedule">
+    <text class="link">查看全部排班 →</text>
+  </view>
+</view>
