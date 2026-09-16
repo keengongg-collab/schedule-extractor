@@ -1,3 +1,10 @@
+# ============================================================
+# 轻量化AI文档排班日程提取工具
+# Copyright (c) 2026 schedule-extractor Contributors
+# Licensed under MIT License
+# 详见 LICENSE 文件与 PRIVACY.md 隐私声明
+# ============================================================
+
 """
 数据库连接与初始化模块
 SQLite 零配置，数据库文件存放在 backend/data/ 目录下

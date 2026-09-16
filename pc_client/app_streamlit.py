@@ -1,3 +1,10 @@
+# ============================================================
+# 轻量化AI文档排班日程提取工具
+# Copyright (c) 2026 schedule-extractor Contributors
+# Licensed under MIT License
+# 详见 LICENSE 文件与 PRIVACY.md 隐私声明
+# ============================================================
+
 """
 Streamlit PC 端管理工具
 管理员批量上传文档解析、预览排班表格、Excel 导出

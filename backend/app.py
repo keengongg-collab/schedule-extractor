@@ -1,3 +1,10 @@
+# ============================================================
+# 轻量化AI文档排班日程提取工具
+# Copyright (c) 2026 schedule-extractor Contributors
+# Licensed under MIT License
+# 详见 LICENSE 文件与 PRIVACY.md 隐私声明
+# ============================================================
+
 """
 Flask 应用入口
 启动后端服务，注册所有 API 蓝图
