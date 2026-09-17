@@ -13,7 +13,8 @@ Page({
     textInput: '',
     parsing: false,
     parseResult: null,
-    questions: []
+    questions: [],
+    recognizedName: ''
   },
 
   // 文本输入
@@ -21,7 +22,7 @@ Page({
     this.setData({ textInput: e.detail.value })
   },
 
-  // 粘贴文本解析
+  // 粘贴文本解析（集成关键词识别：自动识别文本中的已登记用户）
   async onParseText() {
     const text = this.data.textInput.trim()
     if (!text) {
@@ -29,14 +30,31 @@ Page({
       return
     }
     this.setData({ parsing: true })
+
+    // 关键词识别：识别"我是张三，我把一个组的值班表发上去"中的姓名
+    let recognizedName = ''
+    try {
+      const rec = await api.recognizeUser(text)
+      if (rec.matched && rec.data && rec.data.user) {
+        recognizedName = rec.data.user.name
+      }
+    } catch (e) {
+      // 识别失败不影响解析主流程
+      console.log('关键词识别跳过:', e)
+    }
+
     try {
       const res = await api.parseText(text)
       this.setData({
         parseResult: res.data,
-        questions: res.data.questions || []
+        questions: res.data.questions || [],
+        // 记录识别到的用户，供页面展示
+        recognizedName: recognizedName
       })
       const total = res.data.total || 0
-      if (total > 0) {
+      if (recognizedName) {
+        wx.showToast({ title: `已识别${recognizedName}，提取${total}条`, icon: 'success' })
+      } else if (total > 0) {
         wx.showToast({ title: `提取${total}条日程`, icon: 'success' })
       } else {
         wx.showToast({ title: '未提取到日程', icon: 'none' })

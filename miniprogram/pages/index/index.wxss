@@ -38,4 +38,15 @@
   color: #d48806;
 }
 
+/* 关键词识别提示 */
+.recognized-tip {
+  margin-bottom: 16rpx;
+  padding: 16rpx 20rpx;
+  background: #e6ffed;
+  border-radius: 12rpx;
+  color: #52c41a;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
 .link { color: #4A90D9; text-align: center; display: block; }

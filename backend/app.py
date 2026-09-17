@@ -23,6 +23,7 @@ from backend.db.database import init_db
 from backend.api.routes_schedule import schedule_bp
 from backend.api.routes_upload import upload_bp
 from backend.api.routes_reminder import reminder_bp
+from backend.api.routes_user import user_bp
 
 
 def create_app():
@@ -35,6 +36,7 @@ def create_app():
     app.register_blueprint(schedule_bp)
     app.register_blueprint(upload_bp)
     app.register_blueprint(reminder_bp)
+    app.register_blueprint(user_bp)
 
     # 健康检查接口
     @app.route("/api/health")

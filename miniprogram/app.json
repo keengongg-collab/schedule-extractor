@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/schedule/schedule",
     "pages/detail/detail",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/visual/visual"
   ],
   "window": {
     "navigationBarBackgroundColor": "#4A90D9",
@@ -18,28 +19,16 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "",
-        "selectedIconPath": ""
+        "text": "首页"
       },
       {
         "pagePath": "pages/schedule/schedule",
-        "text": "排班",
-        "iconPath": "",
-        "selectedIconPath": ""
+        "text": "排班"
       },
       {
         "pagePath": "pages/mine/mine",
-        "text": "我的",
-        "iconPath": "",
-        "selectedIconPath": ""
+        "text": "我的"
       }
     ]
-  },
-  "permissions": {
-    "scope.userLocation": {
-      "desc": "位置信息用于值班地点定位"
-    }
-  },
-  "requiredPrivateInfos": ["chooseLocation"]
+  }
 }

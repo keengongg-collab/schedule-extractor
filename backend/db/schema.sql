@@ -53,6 +53,18 @@ CREATE TABLE IF NOT EXISTS parse_logs (
     created_at      TEXT DEFAULT (datetime('now','localtime'))
 );
 
+-- 用户信息表：存储用户预收集的个人信息（姓名等），用于关键词识别关联
+CREATE TABLE IF NOT EXISTS users (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    name            TEXT NOT NULL,                         -- 用户姓名（关键标识）
+    openid          TEXT,                                  -- 微信openid（关联会话/账户）
+    student_id      TEXT,                                  -- 学号/工号（可选）
+    phone           TEXT,                                  -- 联系电话（可选）
+    remark          TEXT DEFAULT '',                       -- 备注
+    created_at      TEXT DEFAULT (datetime('now','localtime')),
+    updated_at      TEXT DEFAULT (datetime('now','localtime'))
+);
+
 -- ============================================================
 -- 索引：加速常用查询
 -- ============================================================
@@ -61,3 +73,4 @@ CREATE INDEX IF NOT EXISTS idx_schedules_date ON schedules(duty_date);
 CREATE INDEX IF NOT EXISTS idx_schedules_confirmed ON schedules(is_confirmed);
 CREATE INDEX IF NOT EXISTS idx_reminders_active ON reminders(is_active);
 CREATE INDEX IF NOT EXISTS idx_qa_status ON qa_records(status);
+CREATE INDEX IF NOT EXISTS idx_users_name ON users(name);

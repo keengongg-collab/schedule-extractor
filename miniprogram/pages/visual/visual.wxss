@@ -1,0 +1,162 @@
+/* pages/visual/visual.wxss 值班表可视化样式 */
+.container { padding: 20rpx; }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.title { font-size: 36rpx; font-weight: bold; }
+.days-picker {
+  background: #4A90D9;
+  color: #fff;
+  border-radius: 12rpx;
+  padding: 12rpx 24rpx;
+  font-size: 26rpx;
+}
+
+.scale-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+}
+
+.loading, .empty { text-align: center; padding: 80rpx; color: #999; }
+
+/* 横向滚动画板 */
+.board-scroll { white-space: nowrap; }
+.board { display: inline-block; }
+
+.row { display: flex; }
+
+/* 时间刻度槽 */
+.time-gutter {
+  width: 80rpx;
+  flex-shrink: 0;
+  border-right: 1rpx solid #eee;
+  text-align: center;
+}
+
+/* 表头行 */
+.row-header .day-header {
+  padding: 12rpx 0;
+  background: #4A90D9;
+  color: #fff;
+  text-align: center;
+}
+.day-header .day-week { display: block; font-size: 26rpx; font-weight: bold; }
+.day-header .day-date { display: block; font-size: 22rpx; opacity: 0.9; }
+.day-header .day-count {
+  display: block;
+  font-size: 20rpx;
+  background: rgba(255,255,255,0.25);
+  border-radius: 8rpx;
+  margin: 4rpx auto 0;
+  width: 60rpx;
+}
+
+/* 纵向列 */
+.day-col {
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+/* 主体行：固定画板高度，块高度按比例 */
+.row-body {
+  align-items: flex-start;
+}
+.day-body {
+  height: 520rpx;
+  background: #fafbfc;
+  border-right: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+  overflow: visible;
+}
+
+/* 时间刻度线 */
+.time-gutter .time-mark {
+  height: 130rpx;
+  font-size: 20rpx;
+  color: #bbb;
+  padding-top: 4rpx;
+  border-bottom: 1rpx dashed #eee;
+}
+
+/* 日程块：高度=时长比例，颜色区分 */
+.task-block {
+  background: #4A90D9;
+  border-radius: 10rpx;
+  margin: 6rpx 8rpx;
+  padding: 8rpx;
+  box-sizing: border-box;
+  min-height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.task-block .task-name {
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.task-block .task-time {
+  color: rgba(255,255,255,0.9);
+  font-size: 20rpx;
+}
+.task-block .task-duration {
+  color: rgba(255,255,255,0.8);
+  font-size: 20rpx;
+}
+
+/* 空日期占位 */
+.task-empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ddd;
+  font-size: 26rpx;
+}
+
+/* 详情弹层 */
+.detail-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.detail-card {
+  width: 80%;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+}
+.detail-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+  font-size: 28rpx;
+}
+.detail-row .lbl { color: #999; }
+.btn-close {
+  margin-top: 30rpx;
+  background: #4A90D9;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+}

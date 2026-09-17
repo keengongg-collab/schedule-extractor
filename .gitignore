@@ -26,6 +26,10 @@ env/
 # 微信开发者工具
 miniprogram/miniprogram_npm/
 miniprogram/node_modules/
+miniprogram/project.private.config.json
+
+# 后端运行时数据（数据库、上传文件）
+backend/data/
 
 # 日志
 *.log

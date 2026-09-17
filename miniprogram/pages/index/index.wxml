@@ -31,6 +31,10 @@
   <!-- 解析结果 -->
   <view wx:if="{{parseResult}}" class="card">
     <view class="section-title">解析结果</view>
+    <!-- 关键词识别到的用户提示 -->
+    <view wx:if="{{recognizedName}}" class="recognized-tip">
+      <text>✅ 已识别用户：{{recognizedName}}</text>
+    </view>
     <view>共提取 {{parseResult.total || 0}} 条日程</view>
 
     <!-- 日程列表 -->

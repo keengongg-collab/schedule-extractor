@@ -97,3 +97,36 @@ class QARecord:
             "field_name": self.field_name,
             "status": self.status,
         }
+
+
+@dataclass
+class User:
+    """用户信息模型（预收集的个人信息，用于关键词识别关联）"""
+    id: Optional[int] = None
+    name: str = ""                        # 用户姓名（关键标识）
+    openid: Optional[str] = None          # 微信openid
+    student_id: Optional[str] = None      # 学号/工号
+    phone: Optional[str] = None           # 联系电话
+    remark: str = ""                     # 备注
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "openid": self.openid,
+            "student_id": self.student_id,
+            "phone": self.phone,
+            "remark": self.remark,
+        }
+
+    @classmethod
+    def from_db_row(cls, row: dict) -> "User":
+        """从数据库行构建对象"""
+        return cls(
+            id=row.get("id"),
+            name=row.get("name", ""),
+            openid=row.get("openid"),
+            student_id=row.get("student_id"),
+            phone=row.get("phone"),
+            remark=row.get("remark", ""),
+        )

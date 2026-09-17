@@ -2,8 +2,101 @@
 <view class="container">
   <!-- Tab切换 -->
   <view class="tab-bar">
+    <view class="tab {{currentTab === 'profile' ? 'active' : ''}}" bindtap="switchTab" data-tab="profile">我的信息</view>
     <view class="tab {{currentTab === 'mySchedule' ? 'active' : ''}}" bindtap="switchTab" data-tab="mySchedule">我的排班</view>
     <view class="tab {{currentTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">待补充信息</view>
+  </view>
+
+  <!-- 我的信息（用户信息收集阶段） -->
+  <view wx:if="{{currentTab === 'profile'}}">
+    <!-- 已保存信息提示 -->
+    <view wx:if="{{myUser}}" class="profile-done">
+      <text class="profile-name">已登记：{{myUser.name}}</text>
+      <text class="profile-sub" wx:if="{{myUser.student_id}}">学号/工号：{{myUser.student_id}}</text>
+    </view>
+
+    <!-- 信息输入表单 -->
+    <view class="card">
+      <view class="section-title">📝 填写个人信息</view>
+      <view class="field">
+        <text class="field-label">姓名 *</text>
+        <input class="field-input" placeholder="请输入你的姓名" value="{{profileName}}" bindinput="onProfileName" />
+      </view>
+      <view class="field">
+        <text class="field-label">学号/工号</text>
+        <input class="field-input" placeholder="选填" value="{{profileStudentId}}" bindinput="onProfileStudentId" />
+      </view>
+      <button class="btn-primary" bindtap="onSaveProfile" loading="{{profileSaving}}" disabled="{{profileSaving}}">
+        {{profileSaving ? '保存中...' : '保存信息'}}
+      </button>
+      <view class="hint">信息仅用于日程关联，不会公开展示</view>
+    </view>
+
+    <!-- 关键词识别系统 -->
+    <view class="card">
+      <view class="section-title">🔍 关键词识别（自动关联）</view>
+      <view class="hint">输入包含姓名的语句，系统自动识别并关联你的日程</view>
+      <textarea
+        class="text-input"
+        placeholder="例如：我是张三，我把一个组的值班表发上去"
+        value="{{recognizeText}}"
+        bindinput="onRecognizeText"
+        auto-height
+        maxlength="-1"
+      />
+      <button class="btn-primary" bindtap="onRecognize" loading="{{recognizing}}" disabled="{{recognizing}}">
+        {{recognizing ? '识别中...' : '开始识别'}}
+      </button>
+
+      <!-- 识别结果 -->
+      <view wx:if="{{recognizeResult}}" class="recognize-result">
+        <view class="rr-title">{{recognizeResult.msg}}</view>
+        <view wx:if="{{recognizeResult.matched}}" class="rr-user">
+          <text>👤 {{recognizeResult.data.user.name}}</text>
+          <text wx:if="{{recognizeResult.data.user.student_id}}">（{{recognizeResult.data.user.student_id}}）</text>
+          <text class="rr-count">关联 {{recognizeResult.data.schedules.length}} 条日程</text>
+        </view>
+        <view wx:if="{{!recognizeResult.matched}}" class="rr-user">
+          <text>未匹配到已登记用户，请先在上方填写姓名</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 值班表可视化入口 -->
+    <view class="card" bindtap="goVisual">
+      <text class="link">📊 值班表可视化视图 →</text>
+    </view>
+
+    <!-- 网络诊断（真机网络错误时使用） -->
+    <view class="card">
+      <view class="section-title">🛠️ 网络诊断</view>
+      <view class="hint">真机提示"网络错误"时点此按钮，自动测试所有候选地址并切换到可用地址</view>
+      <view class="current-host">当前地址：{{currentApiBase}}</view>
+      <button class="btn-primary" bindtap="onDiagnose" loading="{{diagnosing}}" disabled="{{diagnosing}}">
+        {{diagnosing ? '诊断中...' : '开始网络诊断'}}
+      </button>
+
+      <!-- 诊断结果列表 -->
+      <view wx:if="{{diagnoseResults.length > 0}}" class="diag-list">
+        <view
+          wx:for="{{diagnoseResults}}"
+          wx:key="host"
+          class="diag-item {{item.ok ? 'ok' : 'fail'}}"
+          bindtap="onSwitchHost"
+          data-host="{{item.host}}"
+        >
+          <view class="diag-main">
+            <text class="diag-icon">{{item.ok ? '✅' : '❌'}}</text>
+            <view class="diag-info">
+              <text class="diag-host">{{item.host}}</text>
+              <text class="diag-msg">{{item.msg}}（{{item.cost}}ms）</text>
+              <text wx:if="{{item.raw}}" class="diag-raw">{{item.raw}}</text>
+            </view>
+          </view>
+          <text class="diag-tap">点击切换</text>
+        </view>
+      </view>
+    </view>
   </view>
 
   <!-- 我的排班 -->

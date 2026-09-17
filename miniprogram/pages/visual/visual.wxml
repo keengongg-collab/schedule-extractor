@@ -1,0 +1,86 @@
+<!-- pages/visual/visual.wxml 值班表可视化 -->
+<view class="container">
+  <!-- 顶部工具条 -->
+  <view class="toolbar">
+    <text class="title">📊 值班表可视化</text>
+    <picker mode="selector" range="{{daysOptions}}" value="{{daysIndex}}" bindchange="onDaysChange">
+      <view class="days-picker">最近 {{days}} 天 ▾</view>
+    </picker>
+  </view>
+
+  <!-- 缩放说明 -->
+  <view class="scale-hint" wx:if="{{scaleUnit}}">
+    <text>{{scaleUnit}}</text>
+    <text>（块高度 ∝ 值班时长）</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!loading && columns.length === 0}}" class="empty">暂无排班数据</view>
+
+  <!-- 可视化主体：横向日期表头 -->
+  <scroll-view wx:if="{{columns.length > 0}}" scroll-x class="board-scroll">
+    <view class="board">
+      <!-- 表头行：周一、周二... -->
+      <view class="row row-header">
+        <view class="time-gutter">时间</view>
+        <view wx:for="{{columns}}" wx:key="date" class="day-col day-header">
+          <text class="day-week">{{item.weekday}}</text>
+          <text class="day-date">{{item.date.slice(5)}}</text>
+          <text class="day-count" wx:if="{{item.count > 0}}">{{item.count}}班</text>
+        </view>
+      </view>
+
+      <!-- 纵向时间列：为每天的日程按比例渲染高度块 -->
+      <view class="row row-body">
+        <!-- 左侧时间刻度 -->
+        <view class="time-gutter">
+          <view class="time-mark">00:00</view>
+          <view class="time-mark">08:00</view>
+          <view class="time-mark">12:00</view>
+          <view class="time-mark">18:00</view>
+          <view class="time-mark">24:00</view>
+        </view>
+
+        <!-- 每天的纵向列 -->
+        <view wx:for="{{columns}}" wx:key="date" class="day-col day-body">
+          <!-- 空的日程块：按比例渲染高度 -->
+          <view
+            wx:for="{{item.items}}"
+            wx:key="id"
+            wx:for-item="task"
+            wx:for-index="taskIdx"
+            class="task-block"
+            style="height: {{task.ratio * 100}}px;"
+            bindtap="onTapItem"
+            data-col="{{index}}"
+            data-index="{{taskIdx}}"
+          >
+            <text class="task-name">{{task.name}}</text>
+            <text class="task-time">{{task.start_time}}-{{task.end_time}}</text>
+            <text class="task-duration">{{task.duration}}min</text>
+          </view>
+
+          <!-- 无数据占位 -->
+          <view wx:if="{{item.items.length === 0}}" class="task-empty">
+            <text>休</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 日程详情弹层 -->
+  <view wx:if="{{selected}}" class="detail-mask" bindtap="onCloseDetail">
+    <view class="detail-card" catchtap="noop">
+      <view class="detail-title">{{selected.name}} 值班详情</view>
+      <view class="detail-row"><text class="lbl">日期</text><text>{{selected.weekday}} {{selected.date}}</text></view>
+      <view class="detail-row"><text class="lbl">时间</text><text>{{selected.start_time}} - {{selected.end_time}}</text></view>
+      <view class="detail-row"><text class="lbl">时长</text><text>{{selected.duration}} 分钟</text></view>
+      <view class="detail-row"><text class="lbl">地点</text><text>{{selected.location || '未填写'}}</text></view>
+      <view class="detail-row"><text class="lbl">状态</text><text>{{selected.is_confirmed ? '已确认' : '待确认'}}</text></view>
+      <button class="btn-close" bindtap="onCloseDetail">关闭</button>
+    </view>
+  </view>
+</view>
