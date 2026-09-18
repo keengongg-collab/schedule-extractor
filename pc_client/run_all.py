@@ -7,7 +7,7 @@
 
 """
 一键启动入口
-同时启动 Streamlit 网页 + 划词监听插件
+同时启动 Flask 后端 + PySide6 PC 桌面客户端
 
 使用方式：python run_all.py
 """
@@ -21,19 +21,12 @@ import time
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def start_streamlit():
-    """启动 Streamlit 网页"""
-    app_path = os.path.join(BASE_DIR, "pc_client", "app_streamlit.py")
-    subprocess.run([sys.executable, "-m", "streamlit", "run", app_path])
-
-
-def start_word_selector():
-    """启动划词监听插件"""
-    from pc_client.word_selector import WordSelector
-
-    selector = WordSelector()
-    selector.start()
-    return selector
+def start_pc_client():
+    """启动 PySide6 PC 桌面客户端（连接真实后端）"""
+    env = dict(os.environ)
+    env["USE_MOCK"] = "0"
+    app_path = os.path.join(BASE_DIR, "pc_client", "app.py")
+    subprocess.run([sys.executable, app_path], env=env)
 
 
 def start_backend():
@@ -44,34 +37,23 @@ def start_backend():
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("  轻量化AI排班提取工具 - 一键启动")
+    print("  轻量化AI排班提取工具 v1.1 - 一键启动")
     print("=" * 50)
 
     # 1. 先启动后端（独立进程）
-    print("\n[1/3] 启动后端服务...")
+    print("\n[1/2] 启动后端服务...")
     backend_thread = threading.Thread(target=start_backend, daemon=True)
     backend_thread.start()
-    time.sleep(2)  # 等待后端初始化
+    time.sleep(3)  # 等待后端初始化
 
-    # 2. 启动划词插件（后台线程）
-    print("[2/3] 启动划词插件...")
-    try:
-        selector = start_word_selector()
-    except Exception as e:
-        print(f"  划词插件启动失败（不影响网页功能）: {e}")
-        selector = None
-
-    # 3. 启动 Streamlit（主线程，阻塞）
-    print("[3/3] 启动 Streamlit 网页...")
+    # 2. 启动 PySide6 PC 客户端（主线程，阻塞）
+    print("[2/2] 启动 PySide6 PC 客户端（USE_MOCK=0）...")
     print("\n" + "=" * 50)
-    print("  Streamlit: http://localhost:8501")
     print("  后端API:   http://localhost:5000")
-    print("  划词快捷键: Ctrl+Shift+D")
+    print("  PC 客户端: 桌面窗口")
     print("=" * 50 + "\n")
 
     try:
-        start_streamlit()
+        start_pc_client()
     except KeyboardInterrupt:
         print("\n正在关闭...")
-        if selector:
-            selector.stop()

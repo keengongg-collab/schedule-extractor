@@ -13,7 +13,8 @@ openai==1.51.0                  # AI 大模型调用（兼容各类OpenAI格式A
 # sqlite3 为 Python 内置模块，无需额外安装
 
 # ===== PC 端依赖 =====
-streamlit==1.39.0               # PC 网页管理工具
+streamlit==1.39.0               # PC 网页管理工具（v1.x 备用端）
+PySide6>=6.8                    # 新 PC 桌面客户端（AI 日程管理电脑端）
 pandas==2.2.3                   # 表格处理与 Excel 导出
 openpyxl==3.1.5                 # Excel 写入引擎
 pynput==1.7.7                   # 键盘快捷键监听（划词插件）

@@ -31,19 +31,48 @@ def _not_found():
 
 @schedule_bp.route("/api/schedules", methods=["GET"])
 def get_schedules():
-    """获取日程列表，支持按姓名筛选"""
+    """
+    获取日程列表，支持多种筛选（可组合）：
+    - name=张三        按姓名模糊筛选（原有，保持兼容）
+    - date=2026-09-18  某一天的日程
+    - start=2026-09-01&end=2026-09-30  日期范围
+    - month=2026-09    整月日程
+    不带任何筛选时返回全部（按日期、时间排序）
+    """
     name = (request.args.get("name") or "").strip()
+    date_str = (request.args.get("date") or "").strip()
+    start = (request.args.get("start") or "").strip()
+    end = (request.args.get("end") or "").strip()
+    month = (request.args.get("month") or "").strip()
 
+    conditions, params = [], []
+
+    # 日期条件：date 优先，其次 start/end 范围，其次 month 整月
+    if date_str:
+        conditions.append("duty_date = ?")
+        params.append(date_str)
+    elif start or end:
+        if start:
+            conditions.append("duty_date >= ?")
+            params.append(start)
+        if end:
+            conditions.append("duty_date <= ?")
+            params.append(end)
+    elif month and len(month) == 7:
+        conditions.append("duty_date LIKE ?")
+        params.append(f"{month}-%")
+
+    # 姓名条件可与日期条件叠加
     if name:
-        # 按姓名查询个人值班日程
-        rows = query(
-            "SELECT * FROM schedules WHERE name LIKE ? ORDER BY duty_date, start_time",
-            (f"%{name}%",),
-        )
-    else:
-        # 查询全部
-        rows = query("SELECT * FROM schedules ORDER BY duty_date, start_time")
+        conditions.append("name LIKE ?")
+        params.append(f"%{name}%")
 
+    if conditions:
+        sql = f"SELECT * FROM schedules WHERE {' AND '.join(conditions)} ORDER BY duty_date, start_time"
+    else:
+        sql = "SELECT * FROM schedules ORDER BY duty_date, start_time"
+
+    rows = query(sql, tuple(params))
     return jsonify({"code": 0, "msg": "success", "data": rows, "total": len(rows)})
 
 

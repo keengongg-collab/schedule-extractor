@@ -327,3 +327,40 @@ def _get_field_label(field: str) -> str:
         "remark": "备注",
     }
     return labels.get(field, field)
+
+
+def apply_schedules(schedules: list, source_type: str = "upload", original_text: str = "") -> dict:
+    """
+    将预览（dry_run）结果正式落库，并为缺失字段生成 QA 待补充记录。
+    PC 端导入流程：extract_schedules(dry_run=True) 预览 → 用户确认 → 本函数落库。
+
+    :param schedules: dry_run 预览返回的 schedules 列表（可带 id=None）
+    :param source_type: 来源类型 upload/paste/word_selector/chat
+    :param original_text: 原始文本（预览未携带时补传）
+    :return: {"schedules": [带真实 id], "questions": [...], "total": int}
+    """
+    questions, applied = [], []
+
+    for item in schedules:
+        item = normalize_schedule(item)
+
+        if item["duty_date"]:
+            item["duty_date"] = format_date(item["duty_date"])
+        if item["start_time"]:
+            item["start_time"] = format_time(item["start_time"])
+        if item["end_time"]:
+            item["end_time"] = format_time(item["end_time"])
+
+        missing = validate_schedule(item)["missing_fields"]
+        item["missing_fields"] = missing
+        item["original_text"] = original_text or item.get("original_text", "")
+
+        schedule_id = _insert_schedule(item, source_type)
+        logger.info("导入日程已创建 id=%s name=%s date=%s 缺失字段=%s",
+                    schedule_id, item["name"], item["duty_date"], missing or "无")
+        applied.append(dict(item, id=schedule_id))
+
+        if missing:
+            questions.extend(_create_qa_records(schedule_id, item, missing))
+
+    return {"schedules": applied, "questions": questions, "total": len(applied)}

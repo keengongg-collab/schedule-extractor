@@ -32,6 +32,7 @@ from backend.api.routes_reminder import reminder_bp
 from backend.api.routes_user import user_bp
 from backend.api.routes_chat import chat_bp
 from backend.api.routes_qa import qa_bp
+from backend.api.routes_ai import ai_bp
 from backend.utils.logger import get_logger
 
 logger = get_logger("app")
@@ -60,6 +61,7 @@ def create_app():
     app.register_blueprint(user_bp)
     app.register_blueprint(chat_bp)
     app.register_blueprint(qa_bp)
+    app.register_blueprint(ai_bp)
 
     # 健康检查接口
     @app.route("/api/health")
