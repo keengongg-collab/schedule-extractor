@@ -7,11 +7,11 @@
 
 """
 文档解析器模块
-负责读取 PDF、Word、纯文本文件，提取纯文本内容供 AI 分析
+负责读取 PDF、Word(docx)、纯文本文件，提取纯文本内容供 AI 分析
 
-技术说明：
+v1.0 支持格式：
 - PDF：使用 pdfplumber 读取文本
-- Word：使用 python-docx 读取段落和表格
+- DOCX：使用 python-docx 读取段落和表格（不支持旧版 .doc）
 - 纯文本：直接读取
 """
 import os
@@ -27,12 +27,12 @@ def parse_document(filepath: str) -> str:
 
     if ext == ".pdf":
         return _parse_pdf(filepath)
-    elif ext in (".docx", ".doc"):
+    elif ext == ".docx":
         return _parse_word(filepath)
     elif ext == ".txt":
         return _parse_text(filepath)
     else:
-        raise ValueError(f"不支持的文件类型: {ext}")
+        raise ValueError(f"不支持的文件类型: {ext}（v1.0 仅支持 PDF / DOCX / TXT）")
 
 
 def _parse_pdf(filepath: str) -> str:
@@ -60,7 +60,10 @@ def _parse_pdf(filepath: str) -> str:
 
 
 def _parse_word(filepath: str) -> str:
-    """读取 Word 文件内容（段落 + 表格）"""
+    """读取 Word(.docx) 文件内容（段落 + 表格）
+
+    注意：python-docx 仅支持 OOXML 格式的 .docx，不支持旧版二进制 .doc。
+    """
     from docx import Document
 
     doc = Document(filepath)

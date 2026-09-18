@@ -1,0 +1,70 @@
+<!-- pages/chat/chat.wxml 对话式排班智能体 -->
+<view class="chat-page">
+  <!-- 顶部：状态 + 重置 -->
+  <view class="chat-header">
+    <view class="header-left">
+      <text class="agent-name">🤖 排班助手智能体</text>
+      <text class="agent-status">在线 · 可发值班表 / 直接对话</text>
+    </view>
+    <view class="reset-btn" bindtap="onReset">重置</view>
+  </view>
+
+  <!-- 消息列表 -->
+  <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
+    <view wx:for="{{messages}}" wx:key="index" id="msg-{{index}}" class="msg-row {{item.role}}">
+      <!-- 智能体头像 -->
+      <view wx:if="{{item.role === 'agent'}}" class="avatar">🤖</view>
+
+      <view class="bubble-wrap">
+        <!-- 思考过程（可折叠） -->
+        <view wx:if="{{item.thinking.length > 0}}" class="thinking">
+          <view class="thinking-title" bindtap="onToggleThinking" data-index="{{index}}">
+            {{item.thinkingOpen ? '▼' : '▶'}} 思考过程（{{item.thinking.length}} 步）
+          </view>
+          <view wx:if="{{item.thinkingOpen}}" class="thinking-body">
+            <view wx:for="{{item.thinking}}" wx:for-item="step" wx:key="index" class="thinking-step">· {{step}}</view>
+          </view>
+        </view>
+
+        <!-- 气泡 -->
+        <view wx:if="{{item.loading}}" class="bubble loading">
+          <text class="dot d1">●</text><text class="dot d2">●</text><text class="dot d3">●</text>
+        </view>
+        <view wx:else class="bubble">{{item.content}}</view>
+
+        <!-- 快捷选项 -->
+        <view wx:if="{{item.options.length > 0}}" class="options">
+          <view
+            wx:for="{{item.options}}"
+            wx:for-item="opt"
+            wx:key="index"
+            class="option-btn"
+            bindtap="onOptionTap"
+            data-value="{{opt}}"
+          >{{opt}}</view>
+        </view>
+      </view>
+
+      <!-- 用户头像 -->
+      <view wx:if="{{item.role === 'user'}}" class="avatar user">👤</view>
+    </view>
+
+    <view class="list-bottom"></view>
+  </scroll-view>
+
+  <!-- 输入栏 -->
+  <view class="input-bar">
+    <textarea
+      class="chat-input"
+      value="{{inputText}}"
+      bindinput="onInput"
+      placeholder="粘贴值班表，或回复智能体的提问…"
+      auto-height
+      maxlength="-1"
+      confirm-type="send"
+    />
+    <button class="send-btn" bindtap="onSend" disabled="{{sending}}">
+      {{sending ? '···' : '发送'}}
+    </button>
+  </view>
+</view>

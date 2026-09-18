@@ -65,6 +65,27 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at      TEXT DEFAULT (datetime('now','localtime'))
 );
 
+-- 会话表：对话式智能体的多轮会话状态
+CREATE TABLE IF NOT EXISTS chat_sessions (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id      TEXT NOT NULL UNIQUE,                  -- 会话标识（前端生成/复用）
+    openid          TEXT,                                  -- 关联用户
+    state           TEXT DEFAULT 'idle',                   -- 状态机：idle/awaiting_name/awaiting_field/awaiting_scope
+    context         TEXT DEFAULT '{}',                     -- 会话上下文(JSON)：my_name/pending/draft 等
+    created_at      TEXT DEFAULT (datetime('now','localtime')),
+    updated_at      TEXT DEFAULT (datetime('now','localtime'))
+);
+
+-- 对话消息表：存储用户与智能体的往来消息及思考过程
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id      TEXT NOT NULL,                         -- 所属会话
+    role            TEXT NOT NULL,                         -- 角色：user / agent
+    content         TEXT NOT NULL,                         -- 消息内容
+    thinking        TEXT,                                  -- 智能体思考步骤(JSON数组)，前端逐条展示
+    created_at      TEXT DEFAULT (datetime('now','localtime'))
+);
+
 -- ============================================================
 -- 索引：加速常用查询
 -- ============================================================
@@ -74,3 +95,5 @@ CREATE INDEX IF NOT EXISTS idx_schedules_confirmed ON schedules(is_confirmed);
 CREATE INDEX IF NOT EXISTS idx_reminders_active ON reminders(is_active);
 CREATE INDEX IF NOT EXISTS idx_qa_status ON qa_records(status);
 CREATE INDEX IF NOT EXISTS idx_users_name ON users(name);
+CREATE INDEX IF NOT EXISTS idx_chat_msg_session ON chat_messages(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_sessions_sid ON chat_sessions(session_id);

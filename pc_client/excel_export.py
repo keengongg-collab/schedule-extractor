@@ -24,8 +24,8 @@ def export_to_excel(schedules: list, output_dir: str = ".") -> str:
     if not schedules:
         return ""
 
-    # 转为 DataFrame
-    df = pd.DataFrame(schedules)
+    # 转为 DataFrame，空值统一填充为空字符串，避免导出 NaN
+    df = pd.DataFrame(schedules).fillna("")
 
     # 选择并重命名列（只导出有意义的字段）
     column_map = {
@@ -49,16 +49,18 @@ def export_to_excel(schedules: list, output_dir: str = ".") -> str:
 
     # 生成文件名
     filename = f"排班表_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+    os.makedirs(output_dir, exist_ok=True)
     filepath = os.path.join(output_dir, filename)
 
     # 写入 Excel
     with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
         df.to_excel(writer, sheet_name="排班表", index=False)
 
-        # 自动调整列宽
+        # 自动调整列宽（整列为空时给默认宽度，避免 max() 空序列报错）
         worksheet = writer.sheets["排班表"]
         for column in worksheet.columns:
-            max_length = max(len(str(cell.value)) for cell in column if cell.value)
-            worksheet.column_dimensions[column[0].column_letter].width = max_length + 4
+            values = [str(cell.value) for cell in column if cell.value not in (None, "")]
+            max_length = max((len(v) for v in values), default=10)
+            worksheet.column_dimensions[column[0].column_letter].width = min(max_length + 4, 50)
 
     return filepath

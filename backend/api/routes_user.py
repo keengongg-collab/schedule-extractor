@@ -28,7 +28,7 @@ user_bp = Blueprint("user", __name__)
 @user_bp.route("/api/users", methods=["POST"])
 def create_user():
     """提交用户信息（预收集阶段）"""
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     name = (data.get("name") or "").strip()
     if not name:
         return jsonify({"code": 1, "msg": "姓名为必填项"}), 400
@@ -69,40 +69,47 @@ def get_user_by_openid(openid):
 
 # ===== 关键词识别系统 =====
 
-# 中文姓名识别正则：常见姓 + 1~2 个字（宽松匹配）
-_CN_NAME_PATTERN = re.compile(r"[\u4e00-\u9fa5]{2,4}")
+# 姓名 token 与主语句式（仅用于"我是XX"这类明确句式，避免误匹配任意中文词）
+# 非贪婪 + 边界前瞻，避免把"我是张三"整体捕获为姓名
+_NAME_TOKEN = r"[一-龥]{2,4}?(?=[\s，,。:：、；;]|\d|$)"
+_FIRST_PERSON_RE = re.compile(r"(?:我是|我叫|本人是|本人)\s*[的]?\s*(" + _NAME_TOKEN + r")")
 
 
 def recognize_name_from_text(text: str) -> list:
     """
     从用户输入中提取疑似中文姓名。
-    优先匹配"我是XX""我叫XX"等主语句式，其次匹配预收集用户库中的姓名。
-    返回命中的用户列表（与预收集信息关联）。
+    识别优先级（关键：先精确匹配已登记用户，再做句式解析，避免误识别）：
+      1. 已登记用户的姓名直接出现在文本中（精确包含匹配）
+      2. "我是XX / 我叫XX / 本人XX" 主语句式
+    返回全部命中的用户列表（不再只返回第一个）。
     """
     if not text:
         return []
 
-    # 1. 主语句式优先："我是张三" / "我叫李四" / "我是社团的王五"
-    first_person = re.search(r"(?:我是|我叫|本人是|本人)[的]?([\u4e00-\u9fa5]{2,4})", text)
-    candidates = []
-    if first_person:
-        candidates.append(first_person.group(1))
-
-    # 2. 全量提取候选姓名
-    candidates += _CN_NAME_PATTERN.findall(text)
-
-    # 3. 与预收集用户库比对（去掉重复）
-    seen = set()
     matched_users = []
-    for cand in candidates:
-        if cand in seen:
+    seen = set()
+
+    # 1. 优先：已登记用户姓名在文本中精确出现
+    #    按姓名长度倒序，避免"张三"与"张三丰"互相干扰
+    rows = query("SELECT * FROM users ORDER BY length(name) DESC")
+    for row in rows:
+        name = (row.get("name") or "").strip()
+        if not name or name in seen:
             continue
-        seen.add(cand)
-        row = query("SELECT * FROM users WHERE name = ?", (cand,), one=True)
-        if row:
+        if name in text:
+            seen.add(name)
             matched_users.append(User.from_db_row(row).to_dict())
-            # 命中预收集用户后即可返回，避免误匹配
-            break
+
+    # 2. 其次：主语句式解析出的姓名，与用户库比对
+    m = _FIRST_PERSON_RE.search(text)
+    if m:
+        cand = m.group(1)
+        if cand not in seen:
+            row = query("SELECT * FROM users WHERE name = ?", (cand,), one=True)
+            if row:
+                seen.add(cand)
+                matched_users.append(User.from_db_row(row).to_dict())
+
     return matched_users
 
 
@@ -113,7 +120,7 @@ def recognize_user():
     输入如"我是张三，我把一个组的值班表发上去"，
     自动识别"张三"为用户标识，并关联到预收集的用户信息。
     """
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     text = (data.get("text") or "").strip()
     if not text:
         return jsonify({"code": 1, "msg": "文本内容为空"}), 400
@@ -122,7 +129,8 @@ def recognize_user():
 
     if not matched:
         # 未命中预收集用户：返回候选姓名列表，提示用户先完成信息收集
-        candidates = list(dict.fromkeys(_CN_NAME_PATTERN.findall(text)))[:5]
+        m = _FIRST_PERSON_RE.search(text)
+        candidates = [m.group(1)] if m else []
         return jsonify({
             "code": 0,
             "matched": False,

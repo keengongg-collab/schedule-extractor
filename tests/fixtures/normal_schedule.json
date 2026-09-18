@@ -1,0 +1,13 @@
+{
+  "schedules": [
+    {
+      "name": "张三",
+      "duty_date": "2026-03-15",
+      "start_time": "08:00",
+      "end_time": "12:00",
+      "location": "图书馆一楼",
+      "remark": "注意提前到岗",
+      "missing_fields": []
+    }
+  ]
+}

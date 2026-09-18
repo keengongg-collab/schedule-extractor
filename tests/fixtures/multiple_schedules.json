@@ -1,0 +1,22 @@
+{
+  "schedules": [
+    {
+      "name": "王五",
+      "duty_date": "2026-03-17",
+      "start_time": "09:00",
+      "end_time": "13:00",
+      "location": "行政楼",
+      "remark": "",
+      "missing_fields": []
+    },
+    {
+      "name": "赵六",
+      "duty_date": "2026-03-18",
+      "start_time": "14:00",
+      "end_time": "18:00",
+      "location": null,
+      "remark": "",
+      "missing_fields": ["location"]
+    }
+  ]
+}

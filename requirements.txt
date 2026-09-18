@@ -22,3 +22,6 @@ plyer==2.1.0                    # Windows 桌面通知
 
 # ===== 工具 =====
 python-dotenv==1.0.1            # .env 环境变量加载
+
+# ===== 测试 =====
+pytest>=8.3.3                  # 自动化测试（tests/ 目录，Python 3.14 需 9.x）

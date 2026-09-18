@@ -24,8 +24,8 @@ import tkinter as tk
 from tkinter import messagebox
 from pynput import keyboard
 
-# 后端 API 地址
-API_BASE = "http://127.0.0.1:5000"
+# 后端 API 地址（可通过环境变量 API_BASE 覆盖）
+API_BASE = os.getenv("API_BASE", "http://127.0.0.1:5000")
 
 # 触发快捷键组合：Ctrl + Shift + D
 HOTKEY_COMBO = {keyboard.Key.ctrl_l, keyboard.Key.shift}

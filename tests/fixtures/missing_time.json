@@ -1,0 +1,13 @@
+{
+  "schedules": [
+    {
+      "name": "李四",
+      "duty_date": "2026-03-16",
+      "start_time": "08:00",
+      "end_time": null,
+      "location": null,
+      "remark": "",
+      "missing_fields": ["start_time", "end_time", "location"]
+    }
+  ]
+}

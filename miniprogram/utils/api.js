@@ -215,6 +215,30 @@ function getVisualData(days) {
   return request('/api/schedules/visual?days=' + (days || 7), 'GET')
 }
 
+// ===== 对话智能体 =====
+
+/** 打开聊天页：获取欢迎语与登记状态 */
+function chatStart(sessionId, openid) {
+  let url = '/api/chat/start?session_id=' + encodeURIComponent(sessionId)
+  if (openid) url += '&openid=' + encodeURIComponent(openid)
+  return request(url, 'GET')
+}
+
+/** 发送一条消息给智能体 */
+function chatSend(sessionId, text, openid) {
+  return request('/api/chat', 'POST', { session_id: sessionId, text: text, openid: openid })
+}
+
+/** 获取对话历史 */
+function chatHistory(sessionId, limit) {
+  return request('/api/chat/history?session_id=' + encodeURIComponent(sessionId) + '&limit=' + (limit || 50), 'GET')
+}
+
+/** 重置会话 */
+function chatReset(sessionId) {
+  return request('/api/chat/reset', 'POST', { session_id: sessionId })
+}
+
 // 导出接口
 module.exports = {
   getSchedules,
@@ -229,6 +253,10 @@ module.exports = {
   saveUserInfo,
   recognizeUser,
   getVisualData,
+  chatStart,
+  chatSend,
+  chatHistory,
+  chatReset,
   diagnose,
   classifyError
 }

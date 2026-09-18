@@ -8,13 +8,17 @@
 """
 数据库连接与初始化模块
 SQLite 零配置，数据库文件存放在 backend/data/ 目录下
+
+初始化策略（v1.0 集中管理）：
+- 不再在 import 本模块时自动建库，统一由 app.create_app() 调用 init_db()
+- 数据库路径支持环境变量 SCHEDULE_DB_FILE 覆盖（测试时指向临时库，实现隔离）
 """
 import sqlite3
 import os
 
-# 数据库文件路径
+# 数据库文件路径（允许测试通过环境变量重定向到临时库）
 DB_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-DB_PATH = os.path.join(DB_DIR, "schedule.db")
+DB_PATH = os.environ.get("SCHEDULE_DB_FILE") or os.path.join(DB_DIR, "schedule.db")
 SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "schema.sql")
 
 
@@ -29,9 +33,9 @@ def get_connection():
 
 
 def init_db():
-    """初始化数据库：创建目录、执行建表脚本"""
-    # 确保 data 目录存在
-    os.makedirs(DB_DIR, exist_ok=True)
+    """初始化数据库：创建目录、执行建表脚本（集中在应用启动时调用）"""
+    # 确保数据库目录存在（自定义路径时以其所在目录为准）
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
     conn = get_connection()
     try:
@@ -81,8 +85,3 @@ def execute(sql, params=()):
         return cursor.lastrowid or cursor.rowcount
     finally:
         conn.close()
-
-
-# 模块导入时自动初始化数据库
-if __name__ != "__main__":
-    init_db()

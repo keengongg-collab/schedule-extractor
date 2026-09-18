@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pc_client.excel_export import export_to_excel
 from pc_client.notifier import send_test_notification, send_schedule_reminder
 
-# 后端 API 地址
-API_BASE = "http://127.0.0.1:5000"
+# 后端 API 地址（可通过环境变量 API_BASE 覆盖）
+API_BASE = os.getenv("API_BASE", "http://127.0.0.1:5000")
 
 # ===== 页面配置 =====
 st.set_page_config(
@@ -40,6 +40,7 @@ def main():
 
     # 侧边栏导航
     st.sidebar.title("功能菜单")
+    st.sidebar.caption(f"后端地址：`{API_BASE}`\n\n若页面报连接错误，请先启动后端（start.bat 或 `python backend/app.py`）。")
     menu = st.sidebar.radio("选择功能", [
         "📋 排班总览",
         "📤 上传文档解析",
@@ -119,7 +120,7 @@ def page_schedule_overview():
                         st.rerun()
 
     except requests.ConnectionError:
-        st.error("无法连接后端服务，请确保后端已启动（python backend/app.py）")
+        st.error(f"无法连接后端服务（{API_BASE}），请先启动后端：python backend/app.py 或双击 start.bat")
 
 
 def page_upload_parse():
@@ -184,7 +185,7 @@ def page_upload_parse():
             else:
                 st.error(data.get("msg", "解析失败"))
         except requests.ConnectionError:
-            st.error("无法连接后端服务")
+            st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
 
 def page_manual_add():
@@ -224,7 +225,7 @@ def page_manual_add():
                     else:
                         st.error("添加失败")
                 except requests.ConnectionError:
-                    st.error("无法连接后端服务")
+                    st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
 
 def page_pending_questions():
@@ -258,7 +259,7 @@ def page_pending_questions():
                         st.error("请输入补充内容")
 
     except requests.ConnectionError:
-        st.error("无法连接后端服务")
+                    st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
 
 def page_reminder_management():
@@ -285,7 +286,7 @@ def page_reminder_management():
                     else:
                         st.error("创建失败")
                 except requests.ConnectionError:
-                    st.error("无法连接后端服务")
+                    st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
     with col2:
         st.subheader("测试通知")
@@ -302,7 +303,7 @@ def page_reminder_management():
             else:
                 st.info("暂无提醒配置")
         except requests.ConnectionError:
-            st.error("无法连接后端服务")
+            st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
 
 def page_export_excel():
@@ -334,7 +335,7 @@ def page_export_excel():
                 st.error("导出失败")
 
     except requests.ConnectionError:
-        st.error("无法连接后端服务")
+                    st.error(f"无法连接后端服务（{API_BASE}），请确认后端已启动")
 
 
 if __name__ == "__main__":

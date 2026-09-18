@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/chat/chat",
     "pages/index/index",
     "pages/schedule/schedule",
     "pages/detail/detail",
@@ -17,6 +18,10 @@
     "color": "#999999",
     "selectedColor": "#4A90D9",
     "list": [
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "智能体"
+      },
       {
         "pagePath": "pages/index/index",
         "text": "首页"
